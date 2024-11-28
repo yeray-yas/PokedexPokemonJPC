@@ -8,7 +8,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.yerayyas.pokedexpokemonjpc.presentation.pokemonList.PokemonListScreen
+import com.yerayyas.pokedexpokemonjpc.presentation.screens.pokemonList.PokemonListScreen
 
 @Composable
 fun NavigationWrapper(

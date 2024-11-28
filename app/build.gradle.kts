@@ -3,8 +3,6 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.ksp)
-    //id("com.google.dagger.hilt.android")
-    //id("com.google.devtools.ksp")
 }
 
 android {
@@ -49,6 +47,7 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "META-INF/INDEX.LIST"
         }
     }
 }
@@ -81,7 +80,8 @@ dependencies {
 
     // Coil
     implementation (libs.coil)
-    implementation (libs.accompanist.coil)
+    //implementation (libs.accompanist.coil)
+    implementation(libs.coil.compose)
 
     // Navigation
     implementation(libs.androidx.navigation.compose)
@@ -95,6 +95,7 @@ dependencies {
     // Dagger Hilt
     implementation(libs.hilt.android)
     implementation(libs.androidx.palette.ktx)
+    implementation(libs.androidx.runtime.livedata)
     ksp(libs.hilt.android.compiler)
     ksp(libs.androidx.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
@@ -102,12 +103,20 @@ dependencies {
     // Extended icons
     implementation(libs.androidx.material.icons.extended)
 
+    // Logback
+    implementation (libs.logback.classic)
+
     // Tests
     testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
+
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }

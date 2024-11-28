@@ -5,3 +5,4 @@ data class PokedexListEntry(
     val imageUrl: String,
     val number: Int
 )
+
