@@ -227,8 +227,6 @@ fun PokemonList(
     }
 }
 
-
-
 @Composable
 fun PokedexEntry(
     entry: PokedexListEntry,
@@ -307,7 +305,6 @@ fun PokedexRow(
         Spacer(modifier = Modifier.height(16.dp))
     }
 }
-
 
 @Composable
 fun RetrySection(

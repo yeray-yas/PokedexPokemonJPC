@@ -45,7 +45,7 @@ class PokemonListViewModel @Inject constructor(
 
     @SuppressLint("LogNotTimber")
     fun loadPokemonPaginated() {
-        Log.d("PokemonListViewModel", "Cargando Pokémon...")
+        Log.d("PokemonListViewModel", "Loading Pokémon...")
         _isLoading.value = true
         viewModelScope.launch {
             when (val result = repository.getPokemonList(PAGE_SIZE, curPage * PAGE_SIZE)) {
