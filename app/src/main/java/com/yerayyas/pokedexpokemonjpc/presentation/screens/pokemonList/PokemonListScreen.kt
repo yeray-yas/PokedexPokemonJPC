@@ -56,7 +56,8 @@ import com.yerayyas.pokedexpokemonjpc.ui.theme.RobotoCondensed
 
 @Composable
 fun PokemonListScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: PokemonListViewModel = hiltViewModel()
 ) {
     Surface(
         color = MaterialTheme.colorScheme.background,
@@ -78,7 +79,7 @@ fun PokemonListScreen(
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
-                //viewModel.searchPokemonList(it)
+                viewModel.searchPokemonList(it)
                 //navController.navigate("pokemon_list_screen")
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -121,7 +122,7 @@ fun SearchBar(
                     vertical = 12.dp
                 )
                 .onFocusChanged { focusState ->
-                    isHintDisplayed = !focusState.isFocused && text.isEmpty()
+                    isHintDisplayed = !focusState.isFocused && text.isNotEmpty()
                 }
         )
         if (isHintDisplayed) {
@@ -176,6 +177,8 @@ fun PokemonList(
     val loadError by viewModel.loadError.observeAsState("")
     val isLoading by viewModel.isLoading.observeAsState(false)
     val endReached by viewModel.endReached.observeAsState(false)
+    val isSearching by viewModel.isSearching.observeAsState(false)
+
     var isRetrying by remember { mutableStateOf(false) }
 
     Box(
@@ -189,15 +192,14 @@ fun PokemonList(
             modifier = Modifier.fillMaxSize()
         ) {
             items(pokemonList) { entry ->
+                if (!endReached && !isLoading && !isSearching) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    viewModel.loadPokemonPaginated()
+                }
                 PokedexEntry(entry = entry, navController = navController)
             }
 
-            if (!endReached && !isLoading) {
-                item {
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
-                viewModel.loadPokemonPaginated()
-            }
+
         }
 
         if (isLoading && loadError.isEmpty() && pokemonList.isEmpty()) {

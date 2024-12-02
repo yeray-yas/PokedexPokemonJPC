@@ -16,7 +16,9 @@ import com.yerayyas.pokedexpokemonjpc.data.remote.repository.PokemonRepository
 import com.yerayyas.pokedexpokemonjpc.util.Constants.PAGE_SIZE
 import com.yerayyas.pokedexpokemonjpc.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Locale
 import javax.inject.Inject
 
@@ -28,19 +30,55 @@ class PokemonListViewModel @Inject constructor(
     private var curPage = 0
 
     private val _pokemonList = MutableLiveData<List<PokedexListEntry>>(emptyList())
-    val pokemonList: LiveData<List<PokedexListEntry>> get() = _pokemonList
+    val pokemonList: LiveData<List<PokedexListEntry>> = _pokemonList
 
     private val _loadError = MutableLiveData("")
-    val loadError: LiveData<String> get() = _loadError
+    val loadError: LiveData<String> = _loadError
 
     private val _isLoading = MutableLiveData(false)
-    val isLoading: LiveData<Boolean> get() = _isLoading
+    val isLoading: LiveData<Boolean> = _isLoading
 
     private val _endReached = MutableLiveData(false)
-    val endReached: LiveData<Boolean> get() = _endReached
+    val endReached: LiveData<Boolean> = _endReached
+
+    private var cachedPokemonList = listOf<PokedexListEntry>()
+    private var isSearchStarting = true
+
+    var _isSearching = MutableLiveData(false)
+    val isSearching: LiveData<Boolean> = _isSearching
 
     init {
         loadPokemonPaginated()
+    }
+
+    fun searchPokemonList(query: String) {
+        val listToSearch = if (isSearchStarting) {
+            _pokemonList.value
+        } else {
+            cachedPokemonList
+        }
+        viewModelScope.launch(Dispatchers.Default) {
+            if (query.isEmpty()) {
+                withContext(Dispatchers.Main) {
+                    _pokemonList.value = cachedPokemonList
+                    _isSearching.value = false
+                }
+                isSearchStarting = true
+                return@launch
+            }
+            val results = listToSearch?.filter {
+                it.pokemonName.contains(query.trim(), ignoreCase = true) ||
+                        it.number.toString() == query.trim()
+            }
+            if (isSearchStarting) {
+                cachedPokemonList = _pokemonList.value ?: emptyList()
+                isSearchStarting = false
+            }
+            withContext(Dispatchers.Main) {
+                _pokemonList.value = results ?: emptyList()
+                _isSearching.value = true
+            }
+        }
     }
 
     @SuppressLint("LogNotTimber")
@@ -76,6 +114,8 @@ class PokemonListViewModel @Inject constructor(
                     _isLoading.value = false
                     Log.d("PokemonListViewModel", "loadPokemonPaginated: ${_loadError.value}")
                 }
+
+                is Resource.Loading -> TODO()
             }
         }
     }

@@ -8,6 +8,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.yerayyas.pokedexpokemonjpc.presentation.screens.pokemonDetail.PokemonDetailScreen
 import com.yerayyas.pokedexpokemonjpc.presentation.screens.pokemonList.PokemonListScreen
 
 @Composable
@@ -42,7 +43,11 @@ fun NavigationWrapper(
                 it.arguments?.getString("pokemonName")
             }
 
-            //PokemonDetailScreen(navController:navController)
+            PokemonDetailScreen(
+                dominantColor = dominantColor,
+                pokemonName = pokemonName?.lowercase() ?: "",
+                navController = navHostController
+            )
         }
     }
 }
