@@ -1,16 +1,11 @@
 package com.yerayyas.pokedexpokemonjpc.presentation.screens.pokemonList
 
 import android.annotation.SuppressLint
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.util.Log
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.palette.graphics.Palette
-import coil.request.SuccessResult
 import com.yerayyas.pokedexpokemonjpc.data.models.PokedexListEntry
 import com.yerayyas.pokedexpokemonjpc.data.remote.repository.PokemonRepository
 import com.yerayyas.pokedexpokemonjpc.util.Constants.PAGE_SIZE
@@ -44,7 +39,7 @@ class PokemonListViewModel @Inject constructor(
     private var cachedPokemonList = listOf<PokedexListEntry>()
     private var isSearchStarting = true
 
-    var _isSearching = MutableLiveData(false)
+    private val _isSearching = MutableLiveData(false)
     val isSearching: LiveData<Boolean> = _isSearching
 
     init {
@@ -116,15 +111,6 @@ class PokemonListViewModel @Inject constructor(
                 }
 
                 is Resource.Loading -> TODO()
-            }
-        }
-    }
-
-    fun calcDominantColor(drawable: SuccessResult, onFinish: (Color) -> Unit) {
-        val bmp = (drawable as BitmapDrawable).bitmap.copy(Bitmap.Config.ARGB_8888, true)
-        Palette.from(bmp).generate { palette ->
-            palette?.dominantSwatch?.rgb?.let { colorValue ->
-                onFinish(Color(colorValue))
             }
         }
     }
